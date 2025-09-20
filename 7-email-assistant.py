@@ -6,7 +6,6 @@ from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.tools import tool
 from langchain_core.messages import AIMessage
 from langgraph.store.memory import InMemoryStore
-from langmem import create_manage_memory_tool, create_search_memory_tool
 from langgraph.graph import StateGraph, END, add_messages
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
@@ -47,7 +46,6 @@ Use the following rules to make your decision:
 - respond: {triage_email}
 Provide your reasoning and then the final classification.
 """
-
 triage_user_prompt = """
 From: {author}
 To: {to}
@@ -55,8 +53,6 @@ Subject: {subject}
 Body:
 {email_thread}
 """
-
-
 # --- Pydantic Model for Triage ---
 class Router(BaseModel):
     """Analyze the unread email and route it according to its content."""
@@ -67,9 +63,7 @@ class Router(BaseModel):
                     "'respond' for emails that need a reply",
     )
 
-
 llm_router = llm.with_structured_output(Router)
-
 
 # --- Tool Definitions ---
 @tool
@@ -77,18 +71,15 @@ def write_email(to: str, subject: str, content: str) -> str:
     """Write and send an email."""
     return f"Email sent to {to} with subject '{subject}'"
 
-
 @tool
 def schedule_meeting(attendees: list[str], subject: str, duration_minutes: int, preferred_day: str) -> str:
     """Schedule a calendar meeting."""
     return f"Meeting '{subject}' scheduled for {preferred_day} with {len(attendees)} attendees"
 
-
 @tool
 def check_calendar_availability(day: str) -> str:
     """Check calendar availability for a given day."""
     return f"Available times on {day}: 9:00 AM, 2:00 PM, 4:00 PM"
-
 
 # --- Memory and Agent Setup ---
 store = InMemoryStore(index={"embed": ollama_embedder})
