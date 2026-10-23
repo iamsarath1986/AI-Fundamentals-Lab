@@ -1,0 +1,77 @@
+{
+  "schema_version": "synthetic-incident@v1",
+  "provenance": {
+    "type": "synthetic",
+    "description": "Authored hosting incident for development. All identifiers, customer statements, and log entries are fictional; this is not a reproduced fault or a real customer ticket.",
+    "usage": "development",
+    "human_reviewed": false
+  },
+  "incident": {
+    "id": "INC-1002",
+    "tenant_id": "TEN-SYNTHETIC-001",
+    "title": "Website shows a gateway error after a restart",
+    "description": "Our site started showing Bad Gateway around 10:00 UTC. We restarted the application from the hosting panel a few minutes earlier. Static images still load, but the home page and login fail. We cannot tell whether the application finished starting.",
+    "status": "open",
+    "severity": "high",
+    "created_at": "2026-10-22T10:20:00Z"
+  },
+  "context": {
+    "environment": "synthetic",
+    "service": "web-hosting",
+    "hostname": "portal.example.test",
+    "stack": [
+      "nginx",
+      "application server"
+    ],
+    "reported_started_at": "2026-10-22T10:00:00Z",
+    "reported_change": "Customer reports an application restart shortly before the failures; not independently verified.",
+    "reported_impact": "Dynamic pages unavailable; static assets reportedly accessible.",
+    "timezone": "UTC"
+  },
+  "log_artifacts": [
+    {
+      "id": "ART-1002-01",
+      "name": "nginx-error-excerpt.log",
+      "source": "nginx_error",
+      "encoding": "UTF-8",
+      "line_count": 2,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026/10/22 10:00:02 [error] 2101#2101: *101 connect() failed (111: Connection refused) while connecting to upstream, client: 192.0.2.20, server: portal.example.test, request: \"GET / HTTP/1.1\", upstream: \"http://127.0.0.1:8000/\", host: \"portal.example.test\""
+        },
+        {
+          "line_number": 2,
+          "text": "2026/10/22 10:00:12 [error] 2101#2101: *102 connect() failed (111: Connection refused) while connecting to upstream, client: 192.0.2.21, server: portal.example.test, request: \"GET /login HTTP/1.1\", upstream: \"http://127.0.0.1:8000/login\", host: \"portal.example.test\""
+        }
+      ]
+    },
+    {
+      "id": "ART-1002-02",
+      "name": "nginx-access-excerpt.log",
+      "source": "nginx_access",
+      "encoding": "UTF-8",
+      "line_count": 3,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "192.0.2.20 - - [22/Oct/2026:10:00:02 +0000] \"GET / HTTP/1.1\" 502 157"
+        },
+        {
+          "line_number": 2,
+          "text": "192.0.2.21 - - [22/Oct/2026:10:00:12 +0000] \"GET /login HTTP/1.1\" 502 157"
+        },
+        {
+          "line_number": 3,
+          "text": "192.0.2.20 - - [22/Oct/2026:10:00:15 +0000] \"GET /static/logo.png HTTP/1.1\" 200 2048"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Line numbers refer to the included excerpts, not to an unavailable full log file.",
+    "These are authored observations, not measured behavior from a running environment.",
+    "Connection refusal identifies the failing upstream address but does not establish why it is unavailable or whether its configured port is correct.",
+    "No reviewed runbook or confirmed diagnosis is included."
+  ]
+}

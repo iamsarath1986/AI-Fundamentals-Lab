@@ -1,0 +1,73 @@
+{
+  "schema_version": "synthetic-incident@v1",
+  "provenance": {
+    "type": "synthetic",
+    "description": "Authored hosting incident for development. All identifiers, customer statements, and log entries are fictional; this is not a reproduced fault or a real customer ticket.",
+    "usage": "development",
+    "human_reviewed": false
+  },
+  "incident": {
+    "id": "INC-1008",
+    "tenant_id": "TEN-SYNTHETIC-001",
+    "title": "Website name cannot be resolved",
+    "description": "Our browser says the website cannot be found. This started around 10:00 UTC after we edited DNS records in the domain panel. We do not remember exactly which records changed. We cannot tell whether the web server is still working.",
+    "status": "open",
+    "severity": "high",
+    "created_at": "2026-10-22T10:20:00Z"
+  },
+  "context": {
+    "environment": "synthetic",
+    "service": "web-hosting",
+    "hostname": "catalog.example.test",
+    "stack": [
+      "DNS",
+      "web hosting"
+    ],
+    "reported_started_at": "2026-10-22T10:00:00Z",
+    "reported_change": "Customer reports DNS edits shortly before the failure; exact edits not available.",
+    "reported_impact": "Synthetic DNS probes cannot resolve the website name; HTTP was not attempted.",
+    "timezone": "UTC"
+  },
+  "log_artifacts": [
+    {
+      "id": "ART-1008-01",
+      "name": "synthetic-dns-probe-excerpt.log",
+      "source": "synthetic_dns_probe",
+      "encoding": "UTF-8",
+      "line_count": 3,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026-10-22T10:00:02Z resolver=192.0.2.53 query=catalog.example.test type=A rcode=NXDOMAIN answers=0"
+        },
+        {
+          "line_number": 2,
+          "text": "2026-10-22T10:00:07Z resolver=192.0.2.53 query=catalog.example.test type=AAAA rcode=NXDOMAIN answers=0"
+        },
+        {
+          "line_number": 3,
+          "text": "2026-10-22T10:00:12Z resolver=198.51.100.53 query=catalog.example.test type=A rcode=NXDOMAIN answers=0"
+        }
+      ]
+    },
+    {
+      "id": "ART-1008-02",
+      "name": "synthetic-http-probe-excerpt.log",
+      "source": "synthetic_http_probe",
+      "encoding": "UTF-8",
+      "line_count": 1,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026-10-22T10:00:13Z target=https://catalog.example.test/ outcome=dns_resolution_failed http_request_sent=false"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Line numbers refer to the included excerpts, not to an unavailable full log file.",
+    "These are authored observations, not measured behavior from a running environment.",
+    "No authoritative zone snapshot, delegation trace, or DNS change audit is provided. Recursive responses do not prove the exact configuration error or web-server health.",
+    "No reviewed runbook or confirmed diagnosis is included."
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "synthetic-incident@v1",
+  "provenance": {
+    "type": "synthetic",
+    "description": "Authored hosting incident for development. All identifiers, customer statements, and log entries are fictional; this is not a reproduced fault or a real customer ticket.",
+    "usage": "development",
+    "human_reviewed": false
+  },
+  "incident": {
+    "id": "INC-1007",
+    "tenant_id": "TEN-SYNTHETIC-001",
+    "title": "Browser rejects the secure website connection",
+    "description": "This morning our browser says the site certificate has expired. The site was working yesterday. We have not changed DNS or certificates ourselves. We are unsure whether all visitors see the warning.",
+    "status": "open",
+    "severity": "high",
+    "created_at": "2026-10-22T10:20:00Z"
+  },
+  "context": {
+    "environment": "synthetic",
+    "service": "web-hosting",
+    "hostname": "booking.example.test",
+    "stack": [
+      "TLS endpoint",
+      "nginx"
+    ],
+    "reported_started_at": "2026-10-22T10:00:00Z",
+    "reported_change": "No recent customer change reported; certificate renewal history unavailable.",
+    "reported_impact": "A synthetic client cannot establish a verified HTTPS connection.",
+    "timezone": "UTC"
+  },
+  "log_artifacts": [
+    {
+      "id": "ART-1007-01",
+      "name": "synthetic-tls-probe-excerpt.log",
+      "source": "synthetic_tls_probe",
+      "encoding": "UTF-8",
+      "line_count": 3,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026-10-22T10:00:02Z target=booking.example.test:443 sni=booking.example.test certificate_not_before=2026-07-23T00:00:00Z certificate_not_after=2026-10-21T23:59:59Z"
+        },
+        {
+          "line_number": 2,
+          "text": "2026-10-22T10:00:02Z target=booking.example.test:443 verify_result=failed verify_code=10 message=\"certificate has expired\""
+        },
+        {
+          "line_number": 3,
+          "text": "2026-10-22T10:00:12Z target=booking.example.test:443 tls_verified=false http_request_sent=false"
+        }
+      ]
+    },
+    {
+      "id": "ART-1007-02",
+      "name": "nginx-error-excerpt.log",
+      "source": "nginx_error",
+      "encoding": "UTF-8",
+      "line_count": 1,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026/10/22 10:00:02 [info] 2401#2401: *401 SSL_do_handshake() failed (SSL: error:0A000415:SSL routines::sslv3 alert certificate expired:SSL alert number 45) while SSL handshaking, client: 192.0.2.26, server: 0.0.0.0:443"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Line numbers refer to the included excerpts, not to an unavailable full log file.",
+    "These are authored observations, not measured behavior from a running environment.",
+    "The authored probe covers one endpoint and assumes a correct probe clock. Renewal failure, other endpoints, and application health are not established.",
+    "No reviewed runbook or confirmed diagnosis is included."
+  ]
+}

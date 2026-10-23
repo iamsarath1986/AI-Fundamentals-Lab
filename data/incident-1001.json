@@ -1,0 +1,76 @@
+{
+  "schema_version": "synthetic-incident@v1",
+  "provenance": {
+    "type": "synthetic",
+    "description": "Authored hosting incident for development. All identifiers, customer statements, and log entries are fictional; this is not a reproduced fault or a real customer ticket.",
+    "usage": "development",
+    "human_reviewed": false
+  },
+  "incident": {
+    "id": "INC-1001",
+    "tenant_id": "TEN-SYNTHETIC-001",
+    "title": "Online shop returns HTTP 500 during checkout",
+    "description": "Since about 09:10 UTC this morning, customers can browse our shop but cannot finish a purchase. Clicking Place order shows a blank page or a 500 error. We updated the checkout extension shortly before this started. Retrying has not helped. We do not know whether any orders were saved.",
+    "status": "open",
+    "severity": "high",
+    "created_at": "2026-10-22T09:20:00Z"
+  },
+  "context": {
+    "environment": "synthetic",
+    "service": "web-hosting",
+    "hostname": "shop.example.test",
+    "stack": ["nginx", "PHP-FPM", "PHP application", "PostgreSQL"],
+    "reported_started_at": "2026-10-22T09:10:00Z",
+    "reported_change": "Customer reports updating a checkout extension at approximately 09:05 UTC; not independently verified.",
+    "reported_impact": "Checkout unavailable; browsing still works. Order persistence and affected customer count are unknown.",
+    "timezone": "UTC"
+  },
+  "log_artifacts": [
+    {
+      "id": "ART-1001",
+      "name": "nginx-access-excerpt.log",
+      "source": "nginx_access",
+      "encoding": "UTF-8",
+      "line_count": 5,
+      "lines": [
+        {"line_number": 1, "text": "192.0.2.10 - - [22/Oct/2026:09:09:58 +0000] \"GET /products HTTP/1.1\" 200 18420 \"-\" \"SyntheticBrowser/1.0\" request_id=req-1000"},
+        {"line_number": 2, "text": "192.0.2.10 - - [22/Oct/2026:09:10:02 +0000] \"POST /checkout HTTP/1.1\" 500 182 \"-\" \"SyntheticBrowser/1.0\" request_id=req-1001"},
+        {"line_number": 3, "text": "192.0.2.11 - - [22/Oct/2026:09:10:07 +0000] \"GET /products HTTP/1.1\" 200 18420 \"-\" \"SyntheticBrowser/1.0\" request_id=req-1002"},
+        {"line_number": 4, "text": "192.0.2.11 - - [22/Oct/2026:09:10:12 +0000] \"POST /checkout HTTP/1.1\" 500 182 \"-\" \"SyntheticBrowser/1.0\" request_id=req-1003"},
+        {"line_number": 5, "text": "192.0.2.10 - - [22/Oct/2026:09:11:04 +0000] \"POST /checkout HTTP/1.1\" 500 182 \"-\" \"SyntheticBrowser/1.0\" request_id=req-1004"}
+      ]
+    },
+    {
+      "id": "ART-1002",
+      "name": "php-application-error-excerpt.log",
+      "source": "php_application_error",
+      "encoding": "UTF-8",
+      "line_count": 3,
+      "lines": [
+        {"line_number": 1, "text": "[22-Oct-2026 09:10:02 UTC] PHP Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 20971520 bytes) in /var/www/shop/extensions/checkout/OrderBuilder.php on line 218"},
+        {"line_number": 2, "text": "[22-Oct-2026 09:10:12 UTC] PHP Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 20971520 bytes) in /var/www/shop/extensions/checkout/OrderBuilder.php on line 218"},
+        {"line_number": 3, "text": "[22-Oct-2026 09:11:04 UTC] PHP Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 20971520 bytes) in /var/www/shop/extensions/checkout/OrderBuilder.php on line 218"}
+      ]
+    },
+    {
+      "id": "ART-1003",
+      "name": "application-events-excerpt.log",
+      "source": "application_events",
+      "encoding": "UTF-8",
+      "line_count": 4,
+      "lines": [
+        {"line_number": 1, "text": "2026-10-22T09:09:58Z INFO request_id=req-1000 route=/products database_query=product_list outcome=success duration_ms=12"},
+        {"line_number": 2, "text": "2026-10-22T09:10:02Z INFO request_id=req-1001 route=/checkout event=checkout_started"},
+        {"line_number": 3, "text": "2026-10-22T09:10:07Z INFO request_id=req-1002 route=/products database_query=product_list outcome=success duration_ms=15"},
+        {"line_number": 4, "text": "2026-10-22T09:10:12Z INFO request_id=req-1003 route=/checkout event=checkout_started"}
+      ]
+    }
+  ],
+  "limitations": [
+    "Line numbers refer to the included excerpts, not to an unavailable full log file.",
+    "These are authored observations, not measured behavior from a running environment.",
+    "The excerpts do not establish why memory consumption increased or prove the reported extension update caused it.",
+    "The excerpts do not establish whether orders were persisted or whether retries created duplicate orders.",
+    "No reviewed runbook or confirmed diagnosis is included."
+  ]
+}
