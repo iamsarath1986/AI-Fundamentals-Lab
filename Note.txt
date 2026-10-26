@@ -1,5 +1,5 @@
 llama.cpp -> Vulkan
-====================
+-------------------
 1: Run it whenever you need the local model
 
 $ ./build/bin/llama-server \
@@ -28,4 +28,4 @@ curl -fsS http://127.0.0.1:8082/health
     2. Look for Instruct or Chat in the name.
     3. Check the model page for llama.cpp usage instructions.
     4. Open Files and look for .gguf files and a quantization such as Q4_K_M.
-
+========================================================================================================================
