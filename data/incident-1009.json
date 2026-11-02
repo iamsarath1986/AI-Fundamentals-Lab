@@ -1,0 +1,74 @@
+{
+  "schema_version": "synthetic-incident@v1",
+  "provenance": {
+    "type": "synthetic",
+    "description": "Authored hosting incident for development. All identifiers, customer statements, and log entries are fictional; this is not a reproduced fault or a real customer ticket.",
+    "usage": "development",
+    "human_reviewed": false
+  },
+  "incident": {
+    "id": "INC-1009",
+    "tenant_id": "TEN-SYNTHETIC-001",
+    "title": "Outgoing confirmation emails remain queued",
+    "description": "Orders appear in our dashboard but customers are not receiving confirmation emails. We noticed this at 10:00 UTC. Sending a test message did not help. We do not know whether the issue affects every recipient.",
+    "status": "open",
+    "severity": "medium",
+    "created_at": "2026-10-22T10:20:00Z"
+  },
+  "context": {
+    "environment": "synthetic",
+    "service": "web-hosting",
+    "hostname": "mail.example.test",
+    "stack": [
+      "application",
+      "Postfix",
+      "SMTP relay"
+    ],
+    "reported_started_at": "2026-10-22T10:00:00Z",
+    "reported_change": "No recent change reported.",
+    "reported_impact": "Two sampled outbound messages are deferred; total queue size unknown.",
+    "timezone": "UTC"
+  },
+  "log_artifacts": [
+    {
+      "id": "ART-1009-01",
+      "name": "postfix-smtp-excerpt.log",
+      "source": "postfix_smtp",
+      "encoding": "UTF-8",
+      "line_count": 2,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026-10-22T10:00:02Z mail postfix/smtp[2501]: ABC1001: to=<recipient1@example.test>, relay=relay.example.test[192.0.2.25]:25, delay=30, delays=0.1/0.1/29/0.8, dsn=4.7.0, status=deferred (host relay.example.test[192.0.2.25] said: 451 4.7.0 Temporary rate limit exceeded (in reply to end of DATA command))"
+        },
+        {
+          "line_number": 2,
+          "text": "2026-10-22T10:00:12Z mail postfix/smtp[2502]: ABC1002: to=<recipient2@example.test>, relay=relay.example.test[192.0.2.25]:25, delay=30, delays=0.1/0.1/29/0.8, dsn=4.7.0, status=deferred (host relay.example.test[192.0.2.25] said: 451 4.7.0 Temporary rate limit exceeded (in reply to end of DATA command))"
+        }
+      ]
+    },
+    {
+      "id": "ART-1009-02",
+      "name": "application-events-excerpt.log",
+      "source": "application_events",
+      "encoding": "UTF-8",
+      "line_count": 2,
+      "lines": [
+        {
+          "line_number": 1,
+          "text": "2026-10-22T09:59:32Z INFO event=notification_handed_to_local_mta notification_id=notification-01 queue_id=ABC1001"
+        },
+        {
+          "line_number": 2,
+          "text": "2026-10-22T09:59:42Z INFO event=notification_handed_to_local_mta notification_id=notification-02 queue_id=ABC1002"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Line numbers refer to the included excerpts, not to an unavailable full log file.",
+    "These are authored observations, not measured behavior from a running environment.",
+    "The relay reports temporary rate limiting; the excerpts do not establish the quota, its cause, eventual delivery, or whether other recipient routes are affected.",
+    "No reviewed runbook or confirmed diagnosis is included."
+  ]
+}

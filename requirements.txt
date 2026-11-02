@@ -1,5 +1,11 @@
-langchain-core
-langchain-ollama
-langchain-community
-pydantic
+## Install UV ##
+#curl -LsSf https://astral.sh/uv/install.sh | sh
+pandas
+plotly
 python-dotenv
+ipython
+langchain
+langchain-core
+langchain-openai
+openai
+pydantic
